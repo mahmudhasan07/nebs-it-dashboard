@@ -1,5 +1,7 @@
 "use client"
 import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import { BsCalendar2Date } from 'react-icons/bs';
 
 const CreateNotice = () => {
     const [target, setTarget] = useState('');
@@ -8,7 +10,7 @@ const CreateNotice = () => {
     const [position, setPosition] = useState('');
     const [noticeTitle, setNoticeTitle] = useState('');
     const [noticeType, setNoticeType] = useState('');
-    const [publishDate, setPublishDate] = useState('');
+    const [publishDate, setPublishDate] = useState(null);
     const [noticeBody, setNoticeBody] = useState('');
     const [file, setFile] = useState<File | null>(null);
 
@@ -35,20 +37,27 @@ const CreateNotice = () => {
     };
 
     return (
-        <div className="container mx-auto p-5 bg-white rounded-lg shadow-md">
+        <div className="container mx-auto mt-10 p-5 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold text-gray-800 mb-5">Create a Notice</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="target" className="block text-sm font-medium text-gray-700">Target Department(s) or Individual</label>
-                    <select
-                        id="target"
-                        value={target}
-                        onChange={(e) => setTarget(e.target.value)}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    >
-                        <option value="Individual">Individual</option>
-                        <option value="Department">Department</option>
-                    </select>
+                    <div className="relative mt-1">
+                        <select
+                            id="target"
+                            value={target}
+                            onChange={(e) => setTarget(e.target.value)}
+                            className="bg-white border border-gray-300 rounded-md p-2 pl-4 pr-8 w-full text-sm relative appearance-none">
+                            <option value="Individual">Individual</option>
+                            <option value="Department">Department</option>
+                            {/* Add other options here */}
+                        </select>
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            <svg width="18" height="14" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+                                <path d="M3 4l3 3 3-3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
                 </div>
 
                 <div className="mb-4">
@@ -66,17 +75,14 @@ const CreateNotice = () => {
                 <div className="mb-4 grid grid-cols-3 gap-4">
                     <div>
                         <label htmlFor="employeeId" className="block text-sm font-medium text-gray-700">Select Employee ID</label>
-                        <select
+                        <input
+                            type="text"
                             id="employeeId"
                             value={employeeId}
                             onChange={(e) => setEmployeeId(e.target.value)}
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        >
-                            <option>Select employee designation</option>
-                            <option>Manager</option>
-                            <option>Developer</option>
-                            {/* Add more options as necessary */}
-                        </select>
+                            placeholder="Enter employee ID"
+                        />
                     </div>
 
                     <div>
@@ -93,45 +99,65 @@ const CreateNotice = () => {
 
                     <div>
                         <label htmlFor="position" className="block text-sm font-medium text-gray-700">Position</label>
-                        <select
-                            id="position"
-                            value={position}
-                            onChange={(e) => setPosition(e.target.value)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        >
-                            <option>Select employee department</option>
-                            <option>HR</option>
-                            <option>Finance</option>
-                            <option>Engineering</option>
-                        </select>
+                        <div className="relative mt-1">
+                            <select
+                                id="position"
+                                value={position}
+                                onChange={(e) => setPosition(e.target.value)}
+                                className="bg-white border border-gray-300 rounded-md p-2 pl-4 pr-8 w-full text-sm relative appearance-none">
+                                <option>Select employee department</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Engineering</option>
+                                {/* Add other options here */}
+                            </select>
+                            <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                <svg width="18" height="14" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+                                    <path d="M3 4l3 3 3-3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
                     </div>
                 </div>
 
                 <div className="mb-4 grid grid-cols-2 gap-4">
                     <div>
                         <label htmlFor="noticeType" className="block text-sm font-medium text-gray-700">Notice Type</label>
-                        <select
-                            id="noticeType"
+                          <div className="relative mt-1">
+                            <select
+                              id="noticeType"
                             value={noticeType}
                             onChange={(e) => setNoticeType(e.target.value)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        >
-                            <option>Select Notice Type</option>
+                                className="bg-white border border-gray-300 rounded-md p-2 pl-4 pr-8 w-full text-sm relative appearance-none">
+                                <option>Select Notice Type</option>
                             <option>Holiday</option>
                             <option>Meeting</option>
                             <option>Policy Update</option>
-                        </select>
+                                {/* Add other options here */}
+                            </select>
+                            <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                <svg width="18" height="14" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+                                    <path d="M3 4l3 3 3-3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
                     </div>
 
                     <div>
                         <label htmlFor="publishDate" className="block text-sm font-medium text-gray-700">Publish Date</label>
-                        <input
-                            type="date"
-                            id="publishDate"
-                            value={publishDate}
-                            onChange={(e) => setPublishDate(e.target.value)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        />
+                        <div className="relative mt-1">
+                            <DatePicker
+                                selected={publishDate}
+                                onChange={(date: any) => setPublishDate(date)}
+                                placeholderText="Enter Date"
+                                className="bg-white border border-gray-300 rounded-md p-2 w-full text-sm"
+                                dateFormat="MM/dd/yyyy"
+                            />
+                            <span className='absolute top-1/4 text-base font-semibold text-gray-500 right-5'>
+                                <BsCalendar2Date />
+                            </span>
+                        </div>
+                    
                     </div>
                 </div>
 

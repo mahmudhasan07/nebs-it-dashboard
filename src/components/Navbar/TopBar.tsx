@@ -8,9 +8,9 @@ const TopBar = () => {
     const user = useSelector((state: RootState) => state.Auth as { name: string; role: string; image?: string });
 
     return (
-        <div className='flex justify-end gap-4 border-b-2 py-3 px-10 bg-white'>
+        <div className='flex justify-end gap-4 border-b-2 py-2 px-10 bg-white'>
             <div>
-                <img src={user.image || image.src} alt="User" className="w-12 h-12 rounded-full" />
+                <img src={user.image || image.src} alt="User" className="w-10 h-10 rounded-full" />
             </div>
             <div>
                 <h1>{user.name}</h1>

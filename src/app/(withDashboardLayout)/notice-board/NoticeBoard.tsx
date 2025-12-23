@@ -11,7 +11,7 @@ const NoticeBoard = () => {
     const [startDate, setStartDate] = useState(null);
     const route = useRouter();
     return (
-        <div className="p-5 bg-gray-100 min-h-screen">
+        <div className="p-5 ">
             {/* Header */}
             <div className="flex justify-between items-center mb-5">
                 <div>
@@ -22,7 +22,7 @@ const NoticeBoard = () => {
                     </div>
                 </div>
                 <div className="mb-4 space-x-3 grid grid-cols-2">
-                    <button className="bg-[#F95524] text-white px-5 py-2 rounded-md hover:bg-[#F95524]/90">
+                    <button onClick={()=> route.push("/notice-board/add-new")} className="bg-[#F95524] text-white px-5 py-2 rounded-md hover:bg-[#F95524]/90">
                         + Create Notice
                     </button>
                     <button className="border border-[#F59E0B] hover:text-white flex gap-2 relative px-5 py-2 rounded-md hover:bg-[#F59E0B] text-[#F59E0B]">

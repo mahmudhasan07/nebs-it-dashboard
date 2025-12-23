@@ -1,4 +1,6 @@
 'use client'
+import { useAddNoticeMutation } from '@/Redux/Api/noticeAPI';
+import ShowToastify from '@/utils/ShowToastify';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
@@ -8,6 +10,9 @@ import Select from "react-select";
 import { components } from 'react-select';
 
 const CreateNotice = () => {
+
+  const [noticePostFn] = useAddNoticeMutation()
+
   const route = useRouter();
   const [target, setTarget] = useState('');
   const [employeeId, setEmployeeId] = useState('');
@@ -15,7 +20,7 @@ const CreateNotice = () => {
   const [position, setPosition] = useState('');
   const [noticeTitle, setNoticeTitle] = useState('');
   const [noticeType, setNoticeType] = useState<string[]>([]);  // Array for multiple selections
-  const [publishDate, setPublishDate] = useState(null);
+  const [publishDate, setPublishDate] = useState<Date | null>(null);
   const [noticeBody, setNoticeBody] = useState('');
   const [file, setFile] = useState<File | null>(null);
 
@@ -36,21 +41,38 @@ const CreateNotice = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Log the form data to the console
     console.log("Form Submitted with the following data:");
-    console.log({
+    const bodyData = {
       target,
       employeeId,
       employeeName,
       position,
       noticeTitle,
       noticeType,
-      publishDate,
+      publishDate: publishDate?.toISOString(),
       noticeBody,
-      file,
-    });
+    }
+
+    const formData = new FormData();
+
+    formData.append('bodyData', JSON.stringify(bodyData));
+    if (file) {
+      formData.append('noticeImage', file);
+    }
+
+    const { data, error } = await noticePostFn(formData);
+    if (error) {
+      ShowToastify({ error: "Something went wrong" });
+    }
+
+    if (data) {
+      ShowToastify({ success: "Notice Created Successfully" });
+      // route.push("/notice-board");
+    }
+
   };
 
   const customSingleValue = ({ data }: any) => (
@@ -153,36 +175,38 @@ const CreateNotice = () => {
             </div>
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="noticeType" className="block text-sm font-medium text-gray-700">Notice Type</label>
-            <Select
-              isMulti
-              name="noticeType"
-              options={noticeOptions}
-              value={noticeType.map((value) => noticeOptions.find((option) => option.value === value))}
-              onChange={(selectedOptions: any) => {
-                setNoticeType(selectedOptions.map((option: any) => option.value));
-              }}
-              components={{ SingleValue: customSingleValue }}
-              className="text-sm"
-              classNamePrefix="select"
-              placeholder="Select Notice Type"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="publishDate" className="block text-sm font-medium text-gray-700">Publish Date</label>
-            <div className="relative mt-1">
-              <DatePicker
-                selected={publishDate}
-                onChange={(date: any) => setPublishDate(date)}
-                placeholderText="Enter Date"
-                className="bg-white border border-gray-300 rounded-md p-2 w-full text-sm"
-                dateFormat="MM/dd/yyyy"
+          <div className="mb-4 grid grid-cols-2 gap-4">
+            <div className="mb-4 mt-1">
+              <label htmlFor="noticeType" className="block text-sm font-medium text-gray-700">Notice Type</label>
+              <Select
+                isMulti
+                name="noticeType"
+                options={noticeOptions}
+                value={noticeType.map((value) => noticeOptions.find((option) => option.value === value))}
+                onChange={(selectedOptions: any) => {
+                  setNoticeType(selectedOptions.map((option: any) => option.value));
+                }}
+                components={{ SingleValue: customSingleValue }}
+                className="text-sm"
+                classNamePrefix="select"
+                placeholder="Select Notice Type"
               />
-              <span className='absolute top-1/4 text-base font-semibold text-gray-500 right-5'>
-                <BsCalendar2Date />
-              </span>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="publishDate" className="block text-sm font-medium text-gray-700">Publish Date</label>
+              <div className="relative mt-1">
+                <DatePicker
+                  selected={publishDate}
+                  onChange={(date: any) => setPublishDate(date)}
+                  placeholderText="Enter Date"
+                  className="bg-white border border-gray-300 rounded-md p-2 w-[710px] text-sm"
+                  dateFormat="MM/dd/yyyy"
+                />
+                <span className='absolute top-1/4 text-base font-semibold text-gray-500 right-5'>
+                  <BsCalendar2Date />
+                </span>
+              </div>
             </div>
           </div>
 

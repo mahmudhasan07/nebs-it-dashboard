@@ -19,6 +19,15 @@ const noticeApi = baseApi.injectEndpoints({
                 };
             },
         }),
+        changeStatus: builder.mutation({
+            query: ({id,data}) => {
+                return {
+                    url: `/notice/change-status/${id}`,
+                    method: "PUT",
+                    body: data,
+                };
+            },
+        })
     }),
 })
 

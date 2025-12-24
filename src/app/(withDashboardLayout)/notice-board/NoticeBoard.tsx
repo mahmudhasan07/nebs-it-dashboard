@@ -15,20 +15,34 @@ const NoticeBoard = () => {
     const [startDate, setStartDate] = useState(null);
     const [selectedNotice, setSelectedNotice] = useState<any>(null);
     const [openModal, setOpenModal] = useState(false);
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+    const [page, setPage] = useState<number>(1);
+    const limit = 20;
+
 
     const route = useRouter();
 
-    const { data, loading, error } = useGetNoticeQuery({}, {
+    const { data, loading, error, pages, total, totalPage } = useGetNoticeQuery({ page, limit }, {
         selectFromResult: ({ data, isLoading, isError }) => ({
-            data: data?.data,
+            data: data?.data.result,
             loading: isLoading,
-            error: isError
+            error: isError,
+            pages: data?.meta?.page,
+            total: data?.meta?.total,
+            totalPage: data?.meta?.totalPage
         })
     })
 
-    console.log(data, "data");
+    const handleStatusChange = (id: string, status: "PUBLISH" | "UNPUBLISH" | "DRAFT") => {
+        console.log("Update notice:", id, status);
 
+        // 🔹 Call your API here
+        // await updateNoticeStatus({ id, status })
 
+        setOpenMenuId(null);
+    };
+
+    const button = data && [...Array(totalPage).keys()];
     return (
         <div className="p-5 ">
             {/* Header */}
@@ -179,11 +193,40 @@ const NoticeBoard = () => {
                                                 >
                                                     View
                                                 </button>
-                                                <div>
-                                                    <button className='text-lg'>
+                                                <div className="">
+                                                    <button
+                                                        className="text-lg p-1 hover:bg-gray-100 rounded"
+                                                        onClick={() =>
+                                                            setOpenMenuId(openMenuId === item.id ? null : item.id)
+                                                        }
+                                                    >
                                                         <CiMenuKebab />
                                                     </button>
+
+                                                    {openMenuId === item.id && (
+                                                        <div className="absolute right-5 mt-2 w-32 bg-white border rounded-md shadow-lg z-50">
+                                                            <button
+                                                                onClick={() => handleStatusChange(item.id, "PUBLISH")}
+                                                                className="w-full text-left px-3 py-2 hover:bg-gray-100 text-green-600"
+                                                            >
+                                                                Publish
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleStatusChange(item.id, "UNPUBLISH")}
+                                                                className="w-full text-left px-3 py-2 hover:bg-gray-100 text-red-600"
+                                                            >
+                                                                Unpublish
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleStatusChange(item.id, "DRAFT")}
+                                                                className="w-full text-left px-3 py-2 hover:bg-gray-100 text-yellow-600"
+                                                            >
+                                                                Draft
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
+
                                             </td>
                                         </tr>
                                     </tbody>
@@ -193,6 +236,19 @@ const NoticeBoard = () => {
                         </table>
                 }
 
+            </div>
+            <div className="flex justify-center gap-5 mt-5">
+                {button &&
+                    button.map((item: string, index: number) => (
+                        <button
+                            onClick={() => setPage(index + 1)}
+                            className={`border-2 px-3 py-1 rounded-lg font-bold ${page === index + 1 ? "bg-primary text-white" : ""
+                                }`}
+                            key={index}
+                        >
+                            {item + 1}
+                        </button>
+                    ))}
             </div>
             <NoticeDetailsModal
                 isOpen={openModal}

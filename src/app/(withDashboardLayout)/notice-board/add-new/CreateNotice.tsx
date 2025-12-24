@@ -23,6 +23,7 @@ const CreateNotice = () => {
   const [publishDate, setPublishDate] = useState<Date | null>(null);
   const [noticeBody, setNoticeBody] = useState('');
   const [file, setFile] = useState<File | null>(null);
+    const [showModal, setShowModal] = useState(false);
 
   // Options for the select dropdown
   const noticeOptions = [
@@ -70,6 +71,7 @@ const CreateNotice = () => {
 
     if (data) {
       ShowToastify({ success: "Notice Created Successfully" });
+      setShowModal(true);
       // route.push("/notice-board");
     }
 
@@ -89,6 +91,37 @@ const CreateNotice = () => {
 
   return (
     <section className='container'>
+
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+            <h2 className="text-xl font-semibold text-gray-800">Notice Published Successfully</h2>
+            <p className="mt-2 text-gray-600">Your notice "{noticeTitle}" has been published and is now visible to all selected departments.</p>
+            <div className="mt-4 flex justify-between">
+              <button
+                onClick={() => setShowModal(false)}
+                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-md"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => route.push('/notice-board')}
+                className="border border-blue-500 text-blue-500 hover:text-white py-2 px-4 rounded-md hover:bg-blue-500"
+              >
+                View Notice
+              </button>
+              <button
+                onClick={() => route.push('/notice-board')}
+                className="border border-orange-500 text-orange-500 hover:text-white py-2 px-4 rounded-md hover:bg-orange-500"
+              >
+                View Notice
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       <div className='mt-7 flex gap-3'>
         <button onClick={() => route.push("/notice-board")} className='border-[2px] border-gray-300 rounded-lg p-2 '><FaArrowLeft /></button>
         <h1 className="text-2xl font-semibold text-gray-800">Create Notice</h1>

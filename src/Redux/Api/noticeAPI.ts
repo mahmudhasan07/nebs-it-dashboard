@@ -3,9 +3,9 @@ import baseApi from "./baseApi";
 const noticeApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getNotice: builder.query({
-            query: ({ page, limit }) => {
+            query: ({ page, limit, departmentFilter, employeeSearch, statusFilter, startDate }) => {
                 return {
-                    url: `/notice/get?page=${page}&limit=${limit}`,
+                    url: `/notice/get?page=${page}&limit=${limit}&departmentFilter=${departmentFilter}&employeeSearch=${employeeSearch}&statusFilter=${statusFilter}&startDate=${startDate}`,
                     method: "GET",
                 };
             },
